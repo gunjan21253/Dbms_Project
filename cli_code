@@ -1,0 +1,464 @@
+import mysql.connector as sqltor
+con=sqltor.connect (host='localhost',
+password='Bhavya@1234',
+user='root',database='milky_wheels')
+cur=con.cursor()
+print("------------------WELCOME TO MILKY WHEELS------------------")
+     
+while(True):
+     print("1) Enter as Admin")
+     print("2) Enter as Staff")
+     print("3) Enter as Shipper")
+     print("4) Enter as Customer")
+     print("5) Exit the Application")
+     option=int(input("enter your choice"))
+     if option==1:
+         print("Dear Admin,")
+         print("Please enter your username and password")
+         name=input("Enter your name")
+         passwd=input("Enter your password")
+         if(passwd=="123"):
+              while(True):
+                   print("1.update the salaries of all staff members who are over 30 years old by 10%")
+                   print("2.Display all the product names from product where category id is 6")
+                   print("3.What are the names and types of constraints associated with the ‘Cart’ in the database")
+                   print("4.Find the sum of all the items purchased (total_items_purchased) for each order.")
+                   print("5.Find the name of all the users have unused coupons with the corresponding discount percentage from the 'coupons' dataset, when connected to the 'User' dataset ")
+                   print("6.Find the id of all the staff members whose salary is less than 21000.")
+                   print("7.Find the name of all the products whose category id is 6.")
+                   print("8.Find information about of all the foreign keys used in database.")
+                   print("9.Modify the data by increasing the salary of employees whose 'Staff_Id' column is not equal to 0 and whose 'Age' column is greater than 30.")
+                   print("10.Find all the names of users (with their unique_id) and the order cost.")
+                   print("11.List all the column names and their nullable status for the 'Orderinfo' table.")
+                   print("12.Find all the staff_id and their names that have a matching 'inventory_Id' value in the 'inventory' table where 'Inventory_id' is 17.")
+                   print("13.What is the minimum salary of a shipper in the 'Shipper' table, and how is the result ordered based on the minimum salary of the shippers in descending order?")
+                   print("14.Find total salary of staff by username and sex and also include subtotals and grandtotals for each grouping level.")
+                   print("15.Find total cost by cart id and unique id and also include subtotals and grand totals foreach grouping level.")
+                   print("16.Find average discount percentage by coupon id and unique id and also includesubtotals and grand totals for each grouping level.")      
+                   print("17.find the distribution or count of employees by age group and sex and for maleincrease salary by 10% and for females increase it by 12%.")
+                   print("18.Write a trigger will be fired after each row is inserted into the order table.It will update the coupons and order table depending upon the usage if coupons.")
+                   print("19.Write a trigger will be fired after each row is inserted into the purchase table. It willsubtract the quantity purchasedfrom the corresponding item's quantity in the inventory table.")
+                   print("20.Insert a new Shipper in the Shipper Table")
+                   print("21.Delete the employee who has age over 60")
+                   print("22.Add a new Column in the Table Shipper As Speed")
+                   print("23.Back")
+                   option1=int(input("ENTER YOUR OPTION"))
+                   if option1==1:
+                        query="UPDATE Staff SET Salary = Salary * 1.10 WHERE Staff_Id <> 0 and Age>30;"
+                        cur.execute(query)
+                        con.commit()
+                        print("query executed successfully")
+                   elif option1==2:
+                         query="Select Product_name from product Where Category_Id=6;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==3:
+                         query="SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME='Cart';"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==4:
+                         query="SELECT SUM(Items_Purchased) as Total_Items_Purchased,Order_Id FROM order_info GROUP BY Order_Id"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==5:
+                         query="SELECT distinct user.name, coupons.Discount_percentage FROM User JOIN coupons ON user.Unique_id = coupons.Unique_id WHERE coupons.isUsed=0;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==6:
+                         query="SELECT Staff_Id FROM Staff WHERE Salary<21000 ORDER BY Age;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==7:
+                         query="Select Product_name from product Where Category_Id=6;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==8:
+                         query="Select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'FOREIGN KEY';"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==9:
+                         query="UPDATE Staff SET Salary = Salary * 1.10 WHERE Staff_Id <> 0 and Age>30;"
+                         cur.execute(query)
+                         con.commit()
+                         print("query executed successfully")
+                   elif option1==10:
+                         query="SELECT Distinct User.Unique_Id, User.name, Order_info.cost FROM User INNER JOIN order_info ON User.Unique_Id= Order_info.Unique_Id;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==11:
+                         query="SELECT column_name, is_nullable FROM information_schema.columns WHERE table_name = 'Order_info';"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==12:
+                         query="SELECT Staff_Id,Username FROM Staff WHERE inventory_Id IN (SELECT inventory_Id FROM inventory WHERE Inventory_id = 17) ;"               
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==13:
+                         query="SELECT MIN(Shipper_Salary) FROM  Shipper ORDER BY MIN(Shipper_salary) DESC;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==14:
+                         query="SELECT Username,Sex,SUM(Salary) as total FROM staff GROUP BY Username,Sex WITH ROLLUP;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==15:
+                         query="Select Cart_Id,Unique_Id,SUM(Cost) from Cart group by Cart_Id,Unique_Id WITH ROLLUP;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==16:
+                         query="Select coupon_Id,Unique_Id,AVG(Discount_Percentage) from Coupons group by Coupon_Id,Unique_Id WITH ROLLUP;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   elif option1==17:
+                         query="SELECT IF(age < 30, 'Age < 30', 'Age >= 30') as age_group,sex, COUNT(*) AS count,SUM(CASE WHEN sex = 'male' THEN salary * 1.1 WHEN sex = 'female' THEN salary * 1.2 ELSE salary END) AS total_salary FROM staff GROUP BY age_group, sex WITH ROLLUP;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                   
+                   elif option1==18:
+                        cur.execute(" drop trigger if exists set_Coupon")
+                        query="CREATE TRIGGER set_Coupon AFTER INSERT ON order_info FOR EACH ROW BEGIN UPDATE coupons, order_info Set isUsed=CASE WHEN(isUsed IS false) THEN true ELSE false END WHERE NEW.coupon_Id=coupons.coupon_Id AND NEW.order_id=order_info.order_Id;END"
+                        cur.execute(query)
+                        data=cur.fetchall()
+                        for i in data:
+                             print(i)
+                   elif option1==19:
+                        cur.execute(" drop trigger if exists update_inventory_on_purchase")
+                        query="CREATE TRIGGER update_inventory_on_purchase AFTER INSERT ON order_info FOR EACH ROW UPDATE inventory SET inventory_quantity = inventory_quantity - NEW.Items_purchased WHERE product_id = NEW.product_id"
+                        cur.execute(query)
+                        data=cur.fetchall()
+                        for i in data:
+                              print(i)
+                   elif option1==20:
+                         sid=int(input("enter shipper id :"))
+                         sname=input("enter shipper name:")
+                         ssal=int(input("enter the shipper salary:"))
+                         query="insert into Shipper values ({}, '{}',{})".format(sid,sname,ssal);
+                         cur.execute(query)
+                         con.commit()
+                         print("query executed successfully")
+                   elif option1==21:
+                         query="Delete from staff where age>60"
+                         cur.execute(query)
+                         con.commit()
+                         print("query executed successfully")
+                   elif option1==22:
+                         query="Alter Table Shipper add Column Speed integer;"
+                         cur.execute(query)
+                         con.commit()
+                         print("query executed successfully")
+                   else:
+                         break
+     elif option==2:
+               print("Please enter your username and password")
+               name=input("Enter your name")
+               passwd=input("Enter your password")
+               if(passwd=="12345"):
+                    while(True):
+                         print("1.Display all the product names from product where category id is 6")
+                         print("2.Find the sum of all the items purchased (total_items_purchased) for each order.")
+                         print("3.Find the name of all the users have unused coupons with the corresponding discount percentage from the 'coupons' dataset, when connected to the 'User' dataset ")
+                         print("4.Find the name of all the products whose category id is 6.")
+                         print("5.Find all the names of users (with their unique_id) and the order cost.")
+                         print("6.List all the column names and their nullable status for the 'Orderinfo' table.")
+                         print("7.What is the minimum salary of a shipper in the 'Shipper' table, and how is the result ordered based on the minimum salary of the shippers in descending order?")
+                         print("8.Find total cost by cart id and unique id and also include subtotals and grand totals foreach grouping level.")
+                         print("9.Find average discount percentage by coupon id and unique id and also includesubtotals and grand totals for each grouping level.")
+                         print("10.Write a trigger will be fired after each row is inserted into the order table.It will update the coupons and order table depending upon the usage if coupons.")
+                         print("11.Write a trigger will be fired after each row is inserted into the purchase table. It willsubtract the quantity purchasedfrom the corresponding item's quantity in the inventory table.")
+                         print("12.Insert a new Shipper in the Shipper Table")
+                         print("13.View Order Details")
+                         print("14.View all Orders")
+                         print("15.View all products")
+                         print("16.Delete a product")
+                         print("17.Update product information")
+                         print("18.Add a new product")
+                         print("19.Back")
+                         option2=int(input("Enter your option"))
+                         if(option2==1):
+                              query="Select Product_name from product Where Category_Id=6;"
+                              cur.execute(query)
+                              data=cur.fetchall()
+                              for i in data:
+                                   print(i)
+                         elif option2==2:
+                              query="SELECT SUM(Items_Purchased) as Total_Items_Purchased,Order_Id FROM order_info GROUP BY Order_Id"
+                              cur.execute(query)
+                              data=cur.fetchall()
+                              for i in data:
+                                  print(i)
+                         elif option2==3:
+                             query="SELECT distinct user.name, coupons.Discount_percentage FROM User JOIN coupons ON user.Unique_id = coupons.Unique_id WHERE coupons.isUsed=0;"
+                             cur.execute(query)
+                             data=cur.fetchall()
+                             for i in data:
+                                 print(i)
+                         elif option2==4:
+                             query="Select Product_name from product Where Category_Id=6;"
+                             cur.execute(query)
+                             data=cur.fetchall()
+                             for i in data:
+                                   print(i)
+                         elif option2==5:
+                             query="SELECT Distinct User.Unique_Id, User.name, Order_info.cost FROM User INNER JOIN order_info ON User.Unique_Id= Order_info.Unique_Id;"
+                             cur.execute(query)
+                             data=cur.fetchall()
+                             for i in data:
+                                  print(i)
+                         elif option2==6:
+                             query="SELECT column_name, is_nullable FROM information_schema.columns WHERE table_name = 'Order_info';"
+                             cur.execute(query)
+                             data=cur.fetchall()
+                             for i in data:
+                                  print(i)
+                         elif option2==7:
+                            query="SELECT MIN(Shipper_Salary) FROM  Shipper ORDER BY MIN(Shipper_salary) DESC;"
+                            cur.execute(query)
+                            data=cur.fetchall()
+                            for i in data:
+                                 print(i)
+                         elif option2==8:
+                           query="Select Cart_Id,Unique_Id,SUM(Cost) from Cart group by Cart_Id,Unique_Id WITH ROLLUP;"
+                           cur.execute(query)
+                           data=cur.fetchall()
+                           for i in data:
+                                print(i)
+                         elif option2==9:
+                           query="Select coupon_Id,Unique_Id,AVG(Discount_Percentage) from Coupons group by Coupon_Id,Unique_Id WITH ROLLUP;"
+                           cur.execute(query)
+                           data=cur.fetchall()
+                           for i in data:
+                              print(i)
+                         
+                         elif option2==10:
+                              cur.execute(" drop trigger if exists set_Coupon")
+                              query="CREATE TRIGGER set_Coupon AFTER INSERT ON order_info FOR EACH ROW BEGIN UPDATE coupons, order_info Set isUsed=CASE WHEN(isUsed IS false) THEN true ELSE false END WHERE NEW.coupon_Id=coupons.coupon_Id AND NEW.order_id=order_info.order_Id;END"
+                              cur.execute(query)
+                              data=cur.fetchall()
+                              for i in data:
+                                   print(i)
+                          
+                         elif option2==11:
+                              cur.execute(" drop trigger if exists update_inventory_on_purchase")
+                              query="CREATE TRIGGER update_inventory_on_purchase AFTER INSERT ON order_info FOR EACH ROW UPDATE inventory SET inventory_quantity = inventory_quantity - NEW.Items_purchased WHERE product_id = NEW.product_id"
+                              cur.execute(query)
+                              data=cur.fetchall()
+                              for i in data:
+                                   print(i)
+                              
+                              
+                         elif option2==12:
+                            sid=int(input("enter shipper id :"))
+                            sname=input("enter shipper name:")
+                            ssal=int(input("enter the shipper salary:"))
+                            query="insert into Shipper values ({}, '{}',{})".format(sid,sname,ssal);
+                            cur.execute(query)
+                            con.commit()
+                            print("query executed successfully")
+                         elif option2==13:
+                            query="SELECT * FROM order_info WHERE Unique_Id=12"
+                            cur.execute(query)
+                            data=cur.fetchall()
+                            for i in data:
+                                print(i)
+                         elif option2==14:
+                           query="SELECT * FROM order_info;"
+                           cur.execute(query)
+                           data=cur.fetchall()
+                           for i in data:
+                               print(i)
+                         elif option2==15:
+                           query="SELECT * FROM product;"
+                           cur.execute(query)
+                           data=cur.fetchall()
+                           for i in data:
+                               print(i)
+                         elif option2==16:
+                           query="DELETE FROM product WHERE product_id =12;"
+                           cur.execute(query)
+                           con.commit()
+                           print("query executed successfully")
+                         elif option2==17:
+                           query="UPDATE product SET product_cost = 199 WHERE product_id = 1234;"
+                           cur.execute(query)
+                           con.commit()
+                           print("query executed successfully")
+                         elif option2==18:
+                           query="INSERT INTO product (Product_Id,Product_cost,product_name,product_info,category_Id) VALUES (101,120,'banana milk','fresh,Expiry date:12/03/2023',11);"
+                           cur.execute(query)
+                           con.commit()
+                           print("query executed successfully")
+                         else:
+                              break
+                    
+                    
+                    
+                    
+               
+        
+     elif option==3:
+          print("Please enter your username and password")
+          name=input("Enter your name")
+          passwd=input("Enter your password")
+          if(passwd=="12345"):
+               while(True):
+                    print("1.Display all the product names from product where category id is 6")
+                    print("2.Provide Customer Service")
+                    print("3.Manage the inventory according to the orders delivered")
+                    print("4.Prepare the shipments")
+                    print("5.List all the column names and their nullable status for the 'Orderinfo' table.")
+                    print("6.Back")
+                    option2=int(input("enter you option"))
+                    if option2==1:
+                         query="Select Product_name from product Where Category_Id=6;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                    elif option2==2:
+                         query="SELECT * FROM Order_info WHERE Unique_Id=12;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                               print(i)
+                    
+                    elif option2==3:
+                         query="SELECT * FROM Inventory WHERE Product_ID = 15;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                    elif option2==4:
+                          query="UPDATE Inventory SET Total_quantity = Total_quantity - 10 WHERE Product_ID = 13;"
+                          cur.execute(query)
+                          con.commit()
+                          print("query executed successfully")
+                    elif option2==5:
+                          query="SELECT column_name, is_nullable FROM information_schema.columns WHERE table_name = 'Order_info';"
+                          cur.execute(query)
+                          data=cur.fetchall()
+                          for i in data:
+                             print(i)
+                    
+                    elif option2==6:
+                         break
+                    
+               
+              
+     elif option==4:
+          print("Please enter your username and password")
+          name=input("Enter your name")
+          passwd=input("Enter your password")
+          if(passwd=="12345"):
+               while(True):
+                    print("1.Display all the product names from product where category id is 6")
+                    print("2.Find the sum of all the items purchased (total_items_purchased) for each order.")
+                    print("3.List all the column names and their nullable status for the 'Orderinfo' table.")
+                    print("4.Find total cost by cart id and unique id and also include subtotals and grand totals foreach grouping level.")
+                    print("5.Search for products")
+                    print("6.View Product Details")
+                    print("7.Add Products to Cart")
+                    print("8.Update the Cart")
+                    print("9.Remove products from Cart")
+                    print("10.Checkout")
+                    print("11.View Order history")
+                    print("12.Back")
+                    option2=int(input("enter you option"))
+                    if option2==1:
+                         query="Select Product_name from product Where Category_Id=6;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                             print(i)
+                    elif option2==2:
+                         query="SELECT SUM(Items_Purchased) as Total_Items_Purchased,Order_Id FROM order_info GROUP BY Order_Id"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                    elif option2==3:
+                         query="SELECT column_name, is_nullable FROM information_schema.columns WHERE table_name = 'Order_info';"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                    elif option2==4:
+                         query="Select Cart_Id,Unique_Id,SUM(Cost) from Cart group by Cart_Id,Unique_Id WITH ROLLUP;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                              print(i)
+                    
+                    elif option2==5:
+                         query="SELECT * FROM Product WHERE Product_name LIKE '%M%';"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                               print(i)
+                    elif option2==6:
+                         query="SELECT * FROM Product WHERE Product_Id = 4;"
+                         cur.execute(query)
+                         data=cur.fetchall()
+                         for i in data:
+                             print(i)
+                    elif option2==7:
+                         query="INSERT INTO Cart (Cart_Id, Items_purchased, Quantity,Unique_Id,Cost) VALUES (101,10,2,12,150);"
+                         cur.execute(query)
+                         con.commit()
+                         print("query executed successfully")
+                    elif option2==8:
+                         query="UPDATE Cart SET Quantity =14 WHERE Unique_Id=13;"
+                         cur.execute(query)
+                         con.commit()
+                         print("query executed successfully")
+                    elif option2==9:
+                         query="DELETE FROM Cart WHERE Unique_Id=13;"
+                         cur.execute(query)
+                         con.commit()
+                         print("query executed successfully")
+                    elif option2==10:
+                        query="INSERT INTO Order_info (Order_Id,Address,Items_Purchased,Cost,Unique_Id,Coupon_Id,Product_Id) VALUES (101,Apt 1772,10,200,10,10,10);DELETE FROM Cart WHERE UserID = 10;"
+                        cur.execute(query)
+                        con.commit()
+                        print("query executed successfully")
+                    elif option2==11:
+                        query="SELECT * FROM Order_info WHERE Unique_Id = 12;"
+                        cur.execute(query)
+                        data=cur.fetchall()
+                        for i in data:
+                             print(i)
+                    else:
+                         break
+                    
+     elif option==5:
+          break
+
